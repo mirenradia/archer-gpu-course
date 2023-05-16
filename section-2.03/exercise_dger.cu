@@ -43,6 +43,13 @@ __host__ void myErrorHandler(cudaError_t ifail, const char * file,
 
 __global__ void myKernel(int mrow, int ncol, double alpha, double * x,
                          double * y, double * a) {
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  int j = blockIdx.y*blockDim.y + threadIdx.y;
+  
+  // if (i < mrow && j < ncol) {
+    a[mrow*j + i] = a[mrow*j + i] + alpha*x[i]*y[j];
+  // }
+
   return;
 }
 
@@ -54,13 +61,9 @@ int main(int argc, char *argv[]) {
   int ncol =  512;      /* Number of columns */
 
   double alpha = 2.0;
-  double * h_x = NULL;
-  double * h_y = NULL;
-  double * h_a = NULL;
-
-  double * d_x = NULL;
-  double * d_y = NULL;
-  double * d_a = NULL;
+  double * x = NULL;
+  double * y = NULL;
+  double * a = NULL;
 
   /* Check we have a GPU, and get device name from the cudaDeviceProp
    * structure. This is for information. */
@@ -83,54 +86,44 @@ int main(int argc, char *argv[]) {
 
   /* Establish host data (with some initial values for x and y) */
 
-  h_x = (double *) malloc(mrow*sizeof(double));
-  h_y = (double *) malloc(ncol*sizeof(double));
-  h_a = (double *) malloc(mrow*ncol*sizeof(double));
-  assert(h_x);
-  assert(h_y);
-  assert(h_a);
+  // x = (double *) malloc(mrow*sizeof(double));
+  // y = (double *) malloc(ncol*sizeof(double));
+  // a = (double *) malloc(mrow*ncol*sizeof(double));
+  // assert(x);
+  // assert(y);
+  // assert(a);
+  CUDA_ASSERT( cudaMallocManaged(&x, mrow*sizeof(double)) );
+  CUDA_ASSERT( cudaMallocManaged(&y, ncol*sizeof(double)) );
+  CUDA_ASSERT( cudaMallocManaged(&a, mrow*ncol*sizeof(double)) );
 
   for (int i = 0; i < mrow; i++) {
-    h_x[i] = 1.0*i;
+    x[i] = 1.0*i;
   }
   for (int j = 0; j < ncol; j++) {
-    h_y[j] = 1.0*j;
+    y[j] = 1.0*j;
+    for (int i = 0; i < mrow; ++i) {
+      a[j*mrow + i] = 0.0;
+    }
   }
-
-  /* Establish device data and initialise A to zero on the device */
-  /* Copy the initial values of x and y to device memory */
-
-  CUDA_ASSERT( cudaMalloc(&d_x, mrow*sizeof(double)) );
-  CUDA_ASSERT( cudaMalloc(&d_y, ncol*sizeof(double)) );
-  CUDA_ASSERT( cudaMalloc(&d_a, mrow*ncol*sizeof(double)) );
-
-  cudaMemcpyKind kind = cudaMemcpyHostToDevice;
-  CUDA_ASSERT( cudaMemcpy(d_x, h_x, mrow*sizeof(double), kind) );
-  CUDA_ASSERT( cudaMemcpy(d_y, h_y, ncol*sizeof(double), kind) );
-  CUDA_ASSERT( cudaMemset(d_a, 0, mrow*ncol*sizeof(double)) );
 
   /* Define the execution configuration and run the kernel */
 
-  unsigned int nblockx = 1 + (mrow - 1)/THREADS_PER_BLOCK_1D;
-  unsigned int nblocky = 1;
+  unsigned int nblockx = 1 + (mrow - 1)/THREADS_PER_BLOCK_2D;
+  unsigned int nblocky = 1 + (ncol - 1)/THREADS_PER_BLOCK_2D;
   dim3 blocks = {nblockx, nblocky, 1};
-  dim3 threadsPerBlock = {THREADS_PER_BLOCK_1D, 1, 1};
+  dim3 threadsPerBlock = {THREADS_PER_BLOCK_2D, THREADS_PER_BLOCK_2D, 1};
 
-  myKernel<<<blocks, threadsPerBlock>>>(mrow, ncol, alpha, d_x, d_y, d_a);
+  myKernel<<<blocks, threadsPerBlock>>>(mrow, ncol, alpha, x, y, a);
 
   CUDA_ASSERT( cudaPeekAtLastError() );
   CUDA_ASSERT( cudaDeviceSynchronize() );
 
-  /* Retrieve the results to h_a and check the results */
-
-  kind = cudaMemcpyDeviceToHost;
-  CUDA_ASSERT( cudaMemcpy(h_a, d_a, mrow*ncol*sizeof(double), kind) );
 
   int ncorrect = 0;
   printf("Results:\n");
   for (int i = 0; i < mrow; i++) {
     for (int j = 0; j < ncol; j++) {
-      if (fabs(h_a[ncol*i + j] - alpha*h_x[i]*h_y[j]) < DBL_EPSILON) {
+      if (fabs(a[mrow*j + i] - alpha*x[i]*y[j]) < DBL_EPSILON) {
         ncorrect += 1;
       }
     }
@@ -139,12 +132,9 @@ int main(int argc, char *argv[]) {
 
   /* Release resources */
 
-  CUDA_ASSERT( cudaFree(d_y) );
-  CUDA_ASSERT( cudaFree(d_x) );
-  CUDA_ASSERT( cudaFree(d_a) );
-  free(h_a);
-  free(h_y);
-  free(h_x);
+  CUDA_ASSERT( cudaFree(y) );
+  CUDA_ASSERT( cudaFree(x) );
+  CUDA_ASSERT( cudaFree(a) );
 
   return 0;
 }

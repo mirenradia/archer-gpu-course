@@ -38,24 +38,37 @@ __host__ void myErrorHandler(cudaError_t ifail, const char * file,
 /* Kernel parameters (start with 1-d) */
 
 #define THREADS_PER_BLOCK   256
-#define THREADS_PER_BLOCKX   16
+#define THREADS_PER_BLOCKX   32
 #define THREADS_PER_BLOCKY   16
 
-/* An entirely serial kernel. */
 __global__ void myKernel(int mrow, int ncol, double alpha, double * a,
                          double * x, double * y) {
 
-  int tid = blockIdx.x*blockDim.x  + threadIdx.x;
+  // int tid = blockIdx.x*blockDim.x  + threadIdx.x;
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  int j = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if (tid == 0) {
-    for (int i = 0; i < mrow; i++) {
-      double sum = 0.0;
-      for (int j = 0; j < ncol; j++) {
-        sum += a[i*ncol + j]*x[j];
-      }
-      y[i] += alpha*sum;
-    }
+  __shared__ double temp[THREADS_PER_BLOCKY][THREADS_PER_BLOCKX];
+
+  if (i < mrow && j < ncol)
+  {
+    temp[threadIdx.y][threadIdx.x] = a[i*ncol + j]*x[j];
   }
+  
+  __syncthreads();
+
+  if(threadIdx.y == 0 && i < mrow)
+  {
+    double sum = 0.0;
+    for(int jsum = 0; jsum < THREADS_PER_BLOCKY 
+        && blockIdx.y * blockDim.y + jsum < ncol; ++jsum)
+    {
+        sum += temp[jsum][threadIdx.x];
+    }
+
+    atomicAdd(&y[i], alpha * sum);
+  }
+
   return;
 }
 
@@ -63,8 +76,8 @@ __global__ void myKernel(int mrow, int ncol, double alpha, double * a,
 
 int main(int argc, char *argv[]) {
 
-  int mrow = 1024;       /* Number of rows */
-  int ncol =  256;       /* Number of columns (start = THREADS_PER_BLOCK) */
+  int mrow = 1500;       /* Number of rows */
+  int ncol = 1500;       /* Number of columns (start = THREADS_PER_BLOCK) */
 
   double alpha = 2.0;
 
@@ -132,9 +145,10 @@ int main(int argc, char *argv[]) {
 
   /* Kernel */
 
-  unsigned int nblockx = 1;
-  dim3 blocks = {nblockx, 1, 1};
-  dim3 threadsPerBlock = {THREADS_PER_BLOCK, 1, 1};
+  unsigned int nblockx = 1 + (mrow - 1)/THREADS_PER_BLOCKX;
+  unsigned int nblocky = 1 + (ncol - 1)/THREADS_PER_BLOCKY;
+  dim3 blocks = {nblockx, nblocky, 1};
+  dim3 threadsPerBlock = {THREADS_PER_BLOCKX, THREADS_PER_BLOCKY, 1};
 
   myKernel<<<blocks, threadsPerBlock>>>(mrow, ncol, alpha, d_a, d_x, d_y);
 
@@ -158,7 +172,7 @@ int main(int argc, char *argv[]) {
       yi = alpha*sum;
       if (fabs(yi - h_y[i]) < DBL_EPSILON) ncorrect += 1;
       /* Can be uncommented to debug ... */
-      /* printf("Row %5d %14.7e %14.7e\n", i, y, h_y[i]); */
+      // printf("Row %5d %14.7e %14.7e\n", i, yi, h_y[i]);
     }
     printf("No. rows %d, and correct rows %d\n", mrow, ncorrect);
   }

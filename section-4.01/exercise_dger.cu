@@ -88,8 +88,10 @@ int main(int argc, char *argv[]) {
 
   /* Establish host data (with some initial values for x and y) */
 
-  h_x = (double *) malloc(mrow*sizeof(double));
-  h_y = (double *) malloc(ncol*sizeof(double));
+  // h_x = (double *) malloc(mrow*sizeof(double));
+  // h_y = (double *) malloc(ncol*sizeof(double));
+  CUDA_ASSERT( cudaMallocHost(&h_x, mrow*sizeof(double)) );
+  CUDA_ASSERT( cudaMallocHost(&h_y, ncol*sizeof(double)) );
   h_a = (double *) malloc(mrow*ncol*sizeof(double));
   assert(h_x);
   assert(h_y);
@@ -109,10 +111,20 @@ int main(int argc, char *argv[]) {
   CUDA_ASSERT( cudaMalloc(&d_y, ncol*sizeof(double)) );
   CUDA_ASSERT( cudaMalloc(&d_a, mrow*ncol*sizeof(double)) );
 
+  /* Create streams */
+  cudaStream_t stream_x;
+  cudaStream_t stream_y;
+
+  CUDA_ASSERT( cudaStreamCreate(&stream_x) );
+  CUDA_ASSERT( cudaStreamCreate(&stream_y) );
+
   cudaMemcpyKind kind = cudaMemcpyHostToDevice;
-  CUDA_ASSERT( cudaMemcpy(d_x, h_x, mrow*sizeof(double), kind) );
-  CUDA_ASSERT( cudaMemcpy(d_y, h_y, ncol*sizeof(double), kind) );
+  CUDA_ASSERT( cudaMemcpyAsync(d_x, h_x, mrow*sizeof(double), kind, stream_x) );
+  CUDA_ASSERT( cudaMemcpyAsync(d_y, h_y, ncol*sizeof(double), kind, stream_y) );
   CUDA_ASSERT( cudaMemset(d_a, 0, mrow*ncol*sizeof(double)) );
+
+  CUDA_ASSERT( cudaStreamSynchronize(stream_x) );
+  CUDA_ASSERT( cudaStreamSynchronize(stream_y) );
 
   /* Define the execution configuration and run the kernel */
 
@@ -144,12 +156,16 @@ int main(int argc, char *argv[]) {
 
   /* Release resources */
 
+  CUDA_ASSERT( cudaStreamDestroy(stream_x) );
+  CUDA_ASSERT( cudaStreamDestroy(stream_y) );
   CUDA_ASSERT( cudaFree(d_y) );
   CUDA_ASSERT( cudaFree(d_x) );
   CUDA_ASSERT( cudaFree(d_a) );
   free(h_a);
-  free(h_y);
-  free(h_x);
+  // free(h_y);
+  // free(h_x);
+  CUDA_ASSERT( cudaFreeHost(h_y) );
+  CUDA_ASSERT( cudaFreeHost(h_x) );
 
   return 0;
 }

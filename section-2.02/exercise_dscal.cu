@@ -36,12 +36,14 @@ __host__ void myErrorHandler(cudaError_t ifail, const char * file,
 
 
 /* The number of integer elements in the array */
-#define ARRAY_LENGTH 256
+#define ARRAY_LENGTH 1000
 
 /* Suggested kernel parameters */
-#define NUM_BLOCKS  1
+#define NUM_BLOCKS  4
 #define THREADS_PER_BLOCK 256
 
+/* Device kernel */
+__global__ void myKernel(double a, double * x);
 
 /* Main routine */
 
@@ -95,6 +97,13 @@ int main(int argc, char *argv[]) {
   CUDA_ASSERT( cudaMemcpy(d_x, h_x, sz, cudaMemcpyHostToDevice) );
 
   /* ... kernel will be here  ... */
+  dim3 threads_per_block = { THREADS_PER_BLOCK, 1, 1};
+  dim3 num_blocks { 1 + (ARRAY_LENGTH - 1)/THREADS_PER_BLOCK, 1, 1};
+
+  myKernel<<< num_blocks, threads_per_block >>>(a, d_x);
+
+  CUDA_ASSERT( cudaPeekAtLastError() );
+  CUDA_ASSERT( cudaDeviceSynchronize() );
 
   /* copy the result array back to the host output array */
 
@@ -140,4 +149,13 @@ __host__ void myErrorHandler(cudaError_t ifail, const char * file,
   }
 
   return;
+}
+
+__global__ void myKernel(double a, double * x) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (i < ARRAY_LENGTH) { 
+    x[i] *= a;
+  }
+
 }

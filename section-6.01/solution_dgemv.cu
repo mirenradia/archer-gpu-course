@@ -169,8 +169,8 @@ __global__ void myKernelStep3(int mrow, int ncol, double alpha, double * a,
 
 int main(int argc, char *argv[]) {
 
-  int mrow = 1024;       /* Number of rows */
-  int ncol =  256;       /* Number of columns (start = THREADS_PER_BLOCK) */
+  int mrow = 1500;       /* Number of rows */
+  int ncol = 1500;       /* Number of columns (start = THREADS_PER_BLOCK) */
 
   double alpha = 2.0;
 

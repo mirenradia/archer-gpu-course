@@ -47,6 +47,8 @@ int main(int argc, char *argv[]) {
   double a = 1.0;          /* constant a */
   double * h_x = NULL;     /* input array (host) */
   double * h_out = NULL;   /* output array (host) */
+  double * d_x = NULL;     /* input array (device) */
+  double * d_out = NULL;   /* output array (device) */
 
   /* Check we have a GPU, and get device name from the cudaDeviceProp
    * structure. This is for information. */
@@ -81,13 +83,16 @@ int main(int argc, char *argv[]) {
   }
 
   /* allocate memory on device */
+  CUDA_ASSERT( cudaMalloc(&d_x, sz) );
+  CUDA_ASSERT( cudaMalloc(&d_out, sz) );
 
   /* copy input array from host to GPU */
+  CUDA_ASSERT( cudaMemcpy(d_x, h_x, sz, cudaMemcpyHostToDevice) );
 
   /* ... kernel will be here  ... */
 
   /* copy the result array back to the host output array */
-
+  CUDA_ASSERT( cudaMemcpy(h_out, d_x, sz, cudaMemcpyDeviceToHost) );
 
   /* We can now check the results ... */
   printf("Results:\n");
@@ -102,6 +107,8 @@ int main(int argc, char *argv[]) {
   }
 
   /* free device buffer */
+  CUDA_ASSERT( cudaFree(d_x) );
+  CUDA_ASSERT( cudaFree(d_out) );
 
   /* free host buffers */
   free(h_x);

@@ -31,15 +31,36 @@ __host__ void myErrorHandler(cudaError_t ifail, const char * file,
 
 __global__ void ddot(int n, double * x, double * y, double * result) {
 
-  int tid = blockIdx.x*blockDim.x + threadIdx.x;
+  // int tid = blockIdx.x*blockDim.x + threadIdx.x;
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
 
-  if (tid == 0) {
-    double sum = 0.0;
-    for (int i = 0; i < n; i++) {
-      sum += x[i]*y[i];
-    }
-    *result = sum;
+  // if (tid == 0) {
+  //   double sum = 0.0;
+  //   for (int i = 0; i < n; i++) {
+  //     sum += x[i]*y[i];
+  //   }
+  //   *result = sum;
+  // }
+  if (i < n) {
+    double temp = x[i] * y[i];
+    atomicAdd(result, temp);
   }
+
+  // __shared__ double contributions[THREADS_PER_BLOCK];
+
+  // if (i < n)
+  // {
+  //   contributions[threadIdx.x] = x[i] * y[i];
+  // }
+  // __syncthreads();
+
+  // double sum = 0.0;
+  // if (threadIdx.x == 0 && i < n) {
+  //   for (int j = 0; j < THREADS_PER_BLOCK; ++j ){
+  //     sum += contributions[j];
+  //   }
+  //   atomicAdd(result, sum);
+  // }
 
   return;
 }

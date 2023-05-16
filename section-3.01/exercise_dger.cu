@@ -24,6 +24,7 @@
 #include <stdlib.h>
 
 #include "cuda_runtime.h"
+#include "nvToolsExt.h"
 
 __host__ void myErrorHandler(cudaError_t ifail, const char * file,
                              int line, int fatal);
@@ -43,6 +44,7 @@ __global__ void myKernel(int mrow, int ncol, double alpha, double * x,
 
   int j = blockIdx.x*blockDim.x + threadIdx.x;
   int i = blockIdx.y*blockDim.y + threadIdx.y;
+  
 
   if (i < mrow && j < ncol) {
     a[i*ncol + j] = a[i*ncol + j] + alpha*x[i]*y[j];
@@ -95,12 +97,16 @@ int main(int argc, char *argv[]) {
   assert(h_y);
   assert(h_a);
 
+  nvtxRangeId_t id = nvtxRangeStartA("init");
+
   for (int i = 0; i < mrow; i++) {
     h_x[i] = 1.0*i;
   }
   for (int j = 0; j < ncol; j++) {
     h_y[j] = 1.0*j;
   }
+
+  nvtxRangeEnd(id);
 
   /* Establish device data and initialise A to zero on the device */
   /* Copy the initial values of x and y to device memory */

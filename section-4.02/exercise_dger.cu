@@ -74,6 +74,8 @@ int main(int argc, char *argv[]) {
   int deviceNum = -1;
   cudaDeviceProp prop;
 
+
+
   CUDA_ASSERT( cudaGetDeviceCount(&ndevice) );
 
   if (ndevice == 0) {
@@ -102,6 +104,10 @@ int main(int argc, char *argv[]) {
     h_y[j] = 1.0*j;
   }
 
+  cudaGraph_t graph;
+
+  CUDA_ASSERT( cudaGraphCreate(&graph, 0) );
+
   /* Establish device data and initialise A to zero on the device */
   /* Copy the initial values of x and y to device memory */
 
@@ -121,10 +127,30 @@ int main(int argc, char *argv[]) {
   dim3 blocks = {nblocky, nblockx, 1};
   dim3 threadsPerBlock = {THREADS_PER_BLOCK_2D, THREADS_PER_BLOCK_2D, 1};
 
-  myKernel<<<blocks, threadsPerBlock>>>(mrow, ncol, alpha, d_x, d_y, d_a);
+  cudaKernelNodeParams kParams = {};
+  void * kArgs[] = {&mrow, &ncol, &alpha, &d_x, &d_y, &d_a};
+
+  kParams.func = (void *) myKernel;
+  kParams.kernelParams = kArgs;
+  kParams.gridDim = blocks;
+  kParams.blockDim = threadsPerBlock;
+
+  cudaGraphNode_t kNode;
+
+  CUDA_ASSERT( cudaGraphAddKernelNode(&kNode, graph, NULL, 0, &kParams) );
+
+  cudaGraphExec_t graphExec;
+
+  cudaGraphInstantiate(&graphExec, graph, NULL, NULL, 0);
+  cudaGraphLaunch(graphExec, cudaStreamDefault);
+
+  
+
+  // myKernel<<<blocks, threadsPerBlock>>>(mrow, ncol, alpha, d_x, d_y, d_a);
 
   CUDA_ASSERT( cudaPeekAtLastError() );
   CUDA_ASSERT( cudaDeviceSynchronize() );
+
 
   /* Retrieve the results to h_a and check the results */
 
@@ -144,6 +170,8 @@ int main(int argc, char *argv[]) {
 
   /* Release resources */
 
+  CUDA_ASSERT( cudaGraphExecDestroy(graphExec) );
+  CUDA_ASSERT( cudaGraphDestroy(graph) );
   CUDA_ASSERT( cudaFree(d_y) );
   CUDA_ASSERT( cudaFree(d_x) );
   CUDA_ASSERT( cudaFree(d_a) );
