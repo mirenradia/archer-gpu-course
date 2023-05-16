@@ -1,0 +1,12 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+Device 0 name: Tesla V100-SXM2-16GB
+Maximum number of threads per block: 1024
+Results:
+Number rows x cols     524288; correct:     524288
+Failed to create '/mnt/lustre/indy2lfs/work/tc040/tc040/mradia/archer-gpu-course/section-4.01/streamprofile.nsys-rep': File exists.
+Use `--force-overwrite true` to overwrite existing files.
+Generating '/mnt/lustre/indy2lfs/work/tc040/tc040/mradia/archer-gpu-course/section-4.01/nsys-report-e853.qdstrm'
+[1/1] [0%                          ] nsys-report-4c07.nsys-rep[1/1] [0%                          ] nsys-report-4c07.nsys-rep[1/1] [7%                          ] nsys-report-4c07.nsys-rep[1/1] [14%                         ] nsys-report-4c07.nsys-rep[1/1] [======33%                   ] nsys-report-4c07.nsys-rep[1/1] [========41%                 ] nsys-report-4c07.nsys-rep[1/1] [==========49%               ] nsys-report-4c07.nsys-rep[1/1] [===========50%              ] nsys-report-4c07.nsys-rep[1/1] [============56%             ] nsys-report-4c07.nsys-rep[1/1] [============57%             ] nsys-report-4c07.nsys-rep[1/1] [=============58%            ] nsys-report-4c07.nsys-rep[1/1] [=============59%            ] nsys-report-4c07.nsys-rep[1/1] [=====================87%    ] nsys-report-4c07.nsys-rep[1/1] [=======================93%  ] nsys-report-4c07.nsys-rep[1/1] [========================97% ] nsys-report-4c07.nsys-rep[1/1] [========================99% ] nsys-report-4c07.nsys-rep[1/1] [========================100%] nsys-report-4c07.nsys-rep[1/1] [========================100%] nsys-report-4c07.nsys-rep
+Generated:
+    /mnt/lustre/indy2lfs/work/tc040/tc040/mradia/archer-gpu-course/section-4.01/nsys-report-4c07.nsys-rep

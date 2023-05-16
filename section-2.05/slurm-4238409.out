@@ -1,0 +1,24 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+==3819218== NVPROF is profiling process 3819218, command: ./a.out
+Result for device dot product is:  1.5011827e+15 (correct  1.5011827e+15)
+Correct.
+==3819218== Profiling application: ./a.out
+==3819218== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   64.37%  321.25us         1  321.25us  321.25us  321.25us  ddot(int, double*, double*, double*)
+                   35.22%  175.78us         2  87.887us  87.743us  88.032us  [CUDA memcpy HtoD]
+                    0.41%  2.0480us         1  2.0480us  2.0480us  2.0480us  [CUDA memcpy DtoH]
+      API calls:   99.14%  124.56ms         3  41.521ms  3.0840us  124.46ms  cudaMalloc
+                    0.46%  577.89us         3  192.63us  22.183us  308.25us  cudaMemcpy
+                    0.24%  305.39us         1  305.39us  305.39us  305.39us  cudaDeviceSynchronize
+                    0.08%  102.23us       101  1.0120us     126ns  43.878us  cuDeviceGetAttribute
+                    0.03%  39.380us         1  39.380us  39.380us  39.380us  cudaLaunchKernel
+                    0.02%  19.926us         1  19.926us  19.926us  19.926us  cuDeviceGetName
+                    0.01%  15.425us         1  15.425us  15.425us  15.425us  cudaFree
+                    0.01%  6.8330us         1  6.8330us  6.8330us  6.8330us  cuDeviceGetPCIBusId
+                    0.00%  5.8320us         1  5.8320us  5.8320us  5.8320us  cudaPeekAtLastError
+                    0.00%  1.4010us         3     467ns     175ns  1.0090us  cuDeviceGetCount
+                    0.00%     668ns         2     334ns     142ns     526ns  cuDeviceGet
+                    0.00%     368ns         1     368ns     368ns     368ns  cuDeviceTotalMem
+                    0.00%     237ns         1     237ns     237ns     237ns  cuDeviceGetUuid

@@ -1,0 +1,59 @@
+Loading nvidia/nvhpc-nompi/22.11
+  Loading requirement: gcc/8.2.0
+--------------------------------------------------------------------------
+WARNING: Open MPI will create a shared memory backing file in a
+directory that appears to be mounted on a network filesystem.
+Creating the shared memory backup file on a network file system, such
+as NFS or Lustre is not recommended -- it may cause excessive network
+traffic to your file servers and/or cause shared memory traffic in
+Open MPI to be much slower than expected.
+
+You may want to check what the typical temporary directory is on your
+node.  Possible sources of the location of this temporary directory
+include the $TEMPDIR, $TEMP, and $TMP environment variables.
+
+Note, too, that system administrators can set a list of filesystems
+where Open MPI is disallowed from creating temporary files by setting
+the MCA parameter "orte_no_session_dir".
+
+  Local host: r2i3n0
+  Filename:   /mnt/lustre/indy2lfs/work/tc040/tc040/mradia/archer-gpu-course/util/ompi.r2i3n0.45009/jf.45053/0/shared_mem_cuda_pool.r2i3n0
+
+You can set the MCA paramter shmem_mmap_enable_nfs_warning to 0 to
+disable this message.
+--------------------------------------------------------------------------
+[r2i3n0:3868918] 1 more process has sent help message help-opal-shmem-mmap.txt / mmap on nfs
+[r2i3n0:3868918] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+Device count:           2
+MPI_Comm_size():        2
+
+   Message (B)      secs       B/s      secs       B/s
+                    host      host    device    device
+             8 1.860e-05 4.301e+05 8.123e-03 9.848e+02
+            16 1.784e-05 8.967e+05 1.394e-05 1.148e+06
+            32 1.726e-05 1.854e+06 1.454e-05 2.201e+06
+            64 1.745e-05 3.668e+06 1.409e-05 4.543e+06
+           128 1.691e-05 7.567e+06 1.360e-05 9.409e+06
+           256 1.707e-05 1.499e+07 1.476e-05 1.734e+07
+           512 1.783e-05 2.872e+07 1.432e-05 3.576e+07
+          1024 1.776e-05 5.765e+07 1.394e-05 7.347e+07
+          2048 1.936e-05 1.058e+08 1.448e-05 1.414e+08
+          4096 2.194e-05 1.867e+08 1.393e-05 2.941e+08
+          8192 2.617e-05 3.131e+08 1.403e-05 5.841e+08
+         16384 3.175e-05 5.160e+08 1.433e-05 1.143e+09
+         32768 4.607e-05 7.113e+08 1.460e-05 2.245e+09
+         65536 6.966e-05 9.408e+08 1.587e-05 4.129e+09
+        131072 1.070e-04 1.226e+09 1.688e-05 7.765e+09
+        262144 1.787e-04 1.467e+09 1.962e-05 1.336e+10
+        524288 3.374e-04 1.554e+09 2.491e-05 2.105e+10
+       1048576 6.653e-04 1.576e+09 3.590e-05 2.921e+10
+       2097152 1.146e-03 1.829e+09 5.750e-05 3.647e+10
+       4194304 2.153e-03 1.948e+09 1.013e-04 4.141e+10
+       8388608 4.494e-03 1.867e+09 1.884e-04 4.453e+10
+      16777216 9.460e-03 1.774e+09 3.628e-04 4.624e+10
+      33554432 1.992e-02 1.685e+09 7.092e-04 4.731e+10
+      67108864 4.038e-02 1.662e+09 1.400e-03 4.793e+10
+     134217728 8.079e-02 1.661e+09 2.784e-03 4.822e+10
+     268435456 1.619e-01 1.658e+09 5.550e-03 4.836e+10
+     536870912 3.240e-01 1.657e+09 1.108e-02 4.844e+10
+Complete

@@ -1,0 +1,76 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+--------------------------------------------------------------------------
+WARNING: There are more than one active ports on host 'r2i3n0', but the
+default subnet GID prefix was detected on more than one of these
+ports.  If these ports are connected to different physical IB
+networks, this configuration will fail in Open MPI.  This version of
+Open MPI requires that every physically separate IB subnet that is
+used between connected MPI processes must have different subnet ID
+values.
+
+Please see this FAQ entry for more details:
+
+  http://www.open-mpi.org/faq/?category=openfabrics#ofa-default-subnet-gid
+
+NOTE: You can turn off this warning by setting the MCA parameter
+      btl_openib_warn_default_gid_prefix to 0.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+WARNING: Open MPI will create a shared memory backing file in a
+directory that appears to be mounted on a network filesystem.
+Creating the shared memory backup file on a network file system, such
+as NFS or Lustre is not recommended -- it may cause excessive network
+traffic to your file servers and/or cause shared memory traffic in
+Open MPI to be much slower than expected.
+
+You may want to check what the typical temporary directory is on your
+node.  Possible sources of the location of this temporary directory
+include the $TEMPDIR, $TEMP, and $TMP environment variables.
+
+Note, too, that system administrators can set a list of filesystems
+where Open MPI is disallowed from creating temporary files by setting
+the MCA parameter "orte_no_session_dir".
+
+  Local host: r2i3n0
+  Filename:   /mnt/lustre/indy2lfs/work/tc040/tc040/mradia/archer-gpu-course/util/ompi.r2i3n0.45009/pid.3864424/1/shared_mem_cuda_pool.r2i3n0
+
+You can set the MCA paramter shmem_mmap_enable_nfs_warning to 0 to
+disable this message.
+--------------------------------------------------------------------------
+Device count:           2
+MPI_Comm_size():        2
+
+   Message (B)      secs       B/s      secs       B/s
+                    host      host    device    device
+             8 1.814e-05 4.411e+05 8.024e-03 9.970e+02
+            16 1.732e-05 9.239e+05 1.511e-05 1.059e+06
+            32 1.735e-05 1.845e+06 1.456e-05 2.198e+06
+            64 1.743e-05 3.671e+06 1.410e-05 4.540e+06
+           128 1.828e-05 7.001e+06 1.417e-05 9.034e+06
+           256 1.771e-05 1.446e+07 1.511e-05 1.694e+07
+           512 1.774e-05 2.885e+07 1.471e-05 3.481e+07
+          1024 1.811e-05 5.655e+07 1.384e-05 7.398e+07
+          2048 1.925e-05 1.064e+08 1.494e-05 1.370e+08
+          4096 2.122e-05 1.930e+08 1.439e-05 2.846e+08
+          8192 2.660e-05 3.080e+08 1.441e-05 5.687e+08
+         16384 3.222e-05 5.085e+08 1.517e-05 1.080e+09
+         32768 4.682e-05 6.999e+08 1.531e-05 2.141e+09
+         65536 7.177e-05 9.131e+08 1.582e-05 4.142e+09
+        131072 1.076e-04 1.218e+09 1.706e-05 7.685e+09
+        262144 1.806e-04 1.452e+09 1.978e-05 1.326e+10
+        524288 3.404e-04 1.540e+09 2.533e-05 2.070e+10
+       1048576 6.717e-04 1.561e+09 3.670e-05 2.857e+10
+       2097152 1.161e-03 1.806e+09 5.792e-05 3.621e+10
+       4194304 2.219e-03 1.890e+09 1.017e-04 4.123e+10
+       8388608 4.583e-03 1.830e+09 1.885e-04 4.449e+10
+      16777216 9.689e-03 1.732e+09 3.628e-04 4.625e+10
+      33554432 2.035e-02 1.649e+09 7.092e-04 4.731e+10
+[r2i3n0:3864424] 5 more processes have sent help message help-mpi-btl-openib.txt / default subnet prefix
+[r2i3n0:3864424] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+[r2i3n0:3864424] 1 more process has sent help message help-opal-shmem-mmap.txt / mmap on nfs
+      67108864 4.043e-02 1.660e+09 1.401e-03 4.791e+10
+     134217728 8.114e-02 1.654e+09 2.785e-03 4.820e+10
+     268435456 1.626e-01 1.651e+09 5.551e-03 4.835e+10
+     536870912 3.252e-01 1.651e+09 1.108e-02 4.844e+10
+Complete

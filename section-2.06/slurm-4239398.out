@@ -1,0 +1,29 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+==3871569== NVPROF is profiling process 3871569, command: ./a.out
+Line 159 (exercise_dgemv.cu): cudaErrorIllegalAddress: an illegal memory access was encountered
+Device name: Tesla V100-SXM2-16GB
+Maximum number of threads per block: 1024
+==3871569== Profiling application: ./a.out
+==3871569== Warning: 1 records have invalid timestamps due to insufficient device buffer space. You can configure the buffer space using the option --device-buffer-size.
+==3871569== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:  100.00%  1.6118ms         3  537.28us  2.2400us  1.6074ms  [CUDA memcpy HtoD]
+      API calls:   56.78%  131.95ms         3  43.983ms  3.7290us  131.87ms  cudaMalloc
+                   41.99%  97.575ms         1  97.575ms  97.575ms  97.575ms  cudaDeviceSynchronize
+                    0.77%  1.7966ms         3  598.88us  10.208us  1.7519ms  cudaMemcpy
+                    0.35%  812.11us         1  812.11us  812.11us  812.11us  cudaLaunchKernel
+                    0.04%  102.12us       101  1.0110us     124ns  43.306us  cuDeviceGetAttribute
+                    0.03%  77.237us         1  77.237us  77.237us  77.237us  cudaGetDeviceProperties
+                    0.01%  23.557us         1  23.557us  23.557us  23.557us  cudaGetErrorString
+                    0.01%  22.787us         1  22.787us  22.787us  22.787us  cudaGetDevice
+                    0.01%  20.127us         1  20.127us  20.127us  20.127us  cuDeviceGetName
+                    0.00%  8.2710us         1  8.2710us  8.2710us  8.2710us  cuDeviceGetPCIBusId
+                    0.00%  6.6770us         1  6.6770us  6.6770us  6.6770us  cudaGetDeviceCount
+                    0.00%  1.0490us         2     524ns     235ns     814ns  cuDeviceGet
+                    0.00%  1.0220us         3     340ns     149ns     678ns  cuDeviceGetCount
+                    0.00%     326ns         1     326ns     326ns     326ns  cudaGetErrorName
+                    0.00%     310ns         1     310ns     310ns     310ns  cudaPeekAtLastError
+                    0.00%     247ns         1     247ns     247ns     247ns  cuDeviceTotalMem
+                    0.00%     224ns         1     224ns     224ns     224ns  cuDeviceGetUuid
+======== Error: Application returned non-zero code 188

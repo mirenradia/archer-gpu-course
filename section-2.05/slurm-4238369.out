@@ -1,0 +1,4 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+Result for device dot product is:  1.5011827e+15 (correct  1.5011827e+15)
+Correct.

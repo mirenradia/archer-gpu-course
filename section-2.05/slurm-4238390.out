@@ -1,0 +1,24 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+==3816976== NVPROF is profiling process 3816976, command: ./a.out
+Line 112 (exercise_ddot.cu): cudaErrorIllegalAddress: an illegal memory access was encountered
+==3816976== Profiling application: ./a.out
+==3816976== Warning: 1 records have invalid timestamps due to insufficient device buffer space. You can configure the buffer space using the option --device-buffer-size.
+==3816976== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:  100.00%  175.58us         2  87.791us  87.711us  87.872us  [CUDA memcpy HtoD]
+      API calls:   80.27%  112.90ms         3  37.634ms  3.2420us  112.79ms  cudaMalloc
+                   19.19%  26.986ms         1  26.986ms  26.986ms  26.986ms  cudaDeviceSynchronize
+                    0.40%  568.18us         2  284.09us  260.55us  307.62us  cudaMemcpy
+                    0.08%  111.02us       101  1.0990us     126ns  44.670us  cuDeviceGetAttribute
+                    0.02%  34.788us         1  34.788us  34.788us  34.788us  cudaLaunchKernel
+                    0.01%  20.423us         1  20.423us  20.423us  20.423us  cuDeviceGetName
+                    0.01%  14.103us         1  14.103us  14.103us  14.103us  cudaGetErrorString
+                    0.00%  7.0020us         1  7.0020us  7.0020us  7.0020us  cuDeviceGetPCIBusId
+                    0.00%  5.7610us         1  5.7610us  5.7610us  5.7610us  cudaPeekAtLastError
+                    0.00%  1.4190us         3     473ns     195ns     980ns  cuDeviceGetCount
+                    0.00%     673ns         2     336ns     142ns     531ns  cuDeviceGet
+                    0.00%     306ns         1     306ns     306ns     306ns  cudaGetErrorName
+                    0.00%     294ns         1     294ns     294ns     294ns  cuDeviceTotalMem
+                    0.00%     210ns         1     210ns     210ns     210ns  cuDeviceGetUuid
+======== Error: Application returned non-zero code 188

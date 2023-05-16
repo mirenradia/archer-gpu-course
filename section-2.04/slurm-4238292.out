@@ -1,0 +1,34 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+==3807541== NVPROF is profiling process 3807541, command: ./a.out
+Device 0 name: Tesla V100-SXM2-16GB
+Maximum number of threads per block: 1024
+Results:
+Number rows x cols     524288; correct:     524288
+==3807541== Profiling application: ./a.out
+==3807541== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:  100.00%  2.3350ms         1  2.3350ms  2.3350ms  2.3350ms  myKernel(int, int, double, double*, double*, double*)
+      API calls:   97.71%  132.38ms         3  44.127ms  22.630us  132.33ms  cudaMallocManaged
+                    1.71%  2.3192ms         1  2.3192ms  2.3192ms  2.3192ms  cudaDeviceSynchronize
+                    0.36%  482.36us         3  160.79us  28.524us  393.12us  cudaFree
+                    0.08%  108.90us       101  1.0780us     123ns  43.313us  cuDeviceGetAttribute
+                    0.06%  78.011us         1  78.011us  78.011us  78.011us  cudaGetDeviceProperties
+                    0.03%  46.041us         1  46.041us  46.041us  46.041us  cudaLaunchKernel
+                    0.02%  22.763us         1  22.763us  22.763us  22.763us  cudaGetDevice
+                    0.01%  19.423us         1  19.423us  19.423us  19.423us  cuDeviceGetName
+                    0.01%  7.6060us         1  7.6060us  7.6060us  7.6060us  cudaPeekAtLastError
+                    0.01%  7.4040us         1  7.4040us  7.4040us  7.4040us  cuDeviceGetPCIBusId
+                    0.00%  6.0930us         1  6.0930us  6.0930us  6.0930us  cudaGetDeviceCount
+                    0.00%  1.2840us         3     428ns     180ns     827ns  cuDeviceGetCount
+                    0.00%     729ns         2     364ns     199ns     530ns  cuDeviceGet
+                    0.00%     251ns         1     251ns     251ns     251ns  cuDeviceTotalMem
+                    0.00%     237ns         1     237ns     237ns     237ns  cuDeviceGetUuid
+
+==3807541== Unified Memory profiling result:
+Device "Tesla V100-SXM2-16GB (0)"
+   Count  Avg Size  Min Size  Max Size  Total Size  Total Time  Name
+     118  35.254KB  4.0000KB  896.00KB  4.062500MB  658.6560us  Host To Device
+      26  160.00KB  4.0000KB  0.9961MB  4.062500MB  357.7290us  Device To Host
+       6         -         -         -           -  2.313595ms  Gpu page fault groups
+Total CPU Page faults: 26

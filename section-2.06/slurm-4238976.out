@@ -1,0 +1,29 @@
+Loading nvidia/nvhpc/22.11
+  Loading requirement: gcc/8.2.0
+==3855179== NVPROF is profiling process 3855179, command: ./a.out
+Device name: Tesla V100-SXM2-16GB
+Maximum number of threads per block: 1024
+Results:
+No. rows 1024, and correct rows 4
+==3855179== Profiling application: ./a.out
+==3855179== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   96.94%  307.23us         3  102.41us  1.8240us  303.04us  [CUDA memcpy HtoD]
+                    2.32%  7.3600us         1  7.3600us  7.3600us  7.3600us  myKernel(int, int, double, double*, double*, double*)
+                    0.74%  2.3360us         1  2.3360us  2.3360us  2.3360us  [CUDA memcpy DtoH]
+      API calls:   99.14%  115.08ms         3  38.361ms  3.5700us  115.01ms  cudaMalloc
+                    0.44%  515.98us         4  128.99us  9.9730us  452.65us  cudaMemcpy
+                    0.15%  178.44us         3  59.478us  4.6920us  117.35us  cudaFree
+                    0.09%  102.75us       101  1.0170us     122ns  43.993us  cuDeviceGetAttribute
+                    0.07%  77.495us         1  77.495us  77.495us  77.495us  cudaGetDeviceProperties
+                    0.03%  37.087us         1  37.087us  37.087us  37.087us  cudaLaunchKernel
+                    0.03%  34.143us         1  34.143us  34.143us  34.143us  cudaDeviceSynchronize
+                    0.02%  20.341us         1  20.341us  20.341us  20.341us  cuDeviceGetName
+                    0.02%  18.330us         1  18.330us  18.330us  18.330us  cudaGetDevice
+                    0.01%  9.0440us         1  9.0440us  9.0440us  9.0440us  cuDeviceGetPCIBusId
+                    0.01%  6.1750us         1  6.1750us  6.1750us  6.1750us  cudaGetDeviceCount
+                    0.00%  1.4420us         3     480ns     208ns     955ns  cuDeviceGetCount
+                    0.00%     764ns         2     382ns     183ns     581ns  cuDeviceGet
+                    0.00%     361ns         1     361ns     361ns     361ns  cuDeviceTotalMem
+                    0.00%     333ns         1     333ns     333ns     333ns  cudaPeekAtLastError
+                    0.00%     209ns         1     209ns     209ns     209ns  cuDeviceGetUuid
